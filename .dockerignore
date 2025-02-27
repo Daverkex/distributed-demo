@@ -1,0 +1,7 @@
+.idea/
+.git/
+
+**/Dockerfile
+README.md
+.dockerignore
+helloworld.json
