@@ -1,0 +1,45 @@
+services:
+  temporal-server:
+    image: temporalio/server
+    restart: on-failure
+    user: "0:0" # running as root to avoid permission issues with writing to /tmp/sqlite/db
+    entrypoint:
+      - temporal
+      - server
+      - start-dev
+      - --namespace=default
+      - --db-filename=/tmp/sqlite/db
+      - --ip=0.0.0.0
+    tmpfs:
+      - /tmp/sqlite
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    networks:
+      - temporal-network
+  worker1:
+    build: .
+    entrypoint: ["/worker"]
+    depends_on:
+      - temporal-server
+    networks:
+      - temporal-network
+  worker2:
+    build: .
+    entrypoint: ["/worker"]
+    depends_on:
+      - temporal-server
+    networks:
+      - temporal-network
+  starter:
+    build: .
+    entrypoint: ["/starter"]
+    depends_on:
+      - worker1
+      - worker2
+    networks:
+      - temporal-network
+networks:
+  temporal-network:
+    driver: bridge
+    name: temporal-network
