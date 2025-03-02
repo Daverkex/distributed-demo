@@ -12,6 +12,8 @@ import (
 func main() {
 	// The client and worker are heavyweight objects that should be created once per process.
 	c, err := client.Dial(client.Options{
+		// The Temporal server host and port to connect to.
+		// Change to `127.0.0.1:7233` if you are running the Temporal server locally.
 		HostPort: "dns:temporal-server:7233",
 	})
 	if err != nil {
